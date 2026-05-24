@@ -42,3 +42,7 @@ Complicaciones:
 Buen dia profe, estuve intentando usar el sensor ultrasonico para detectar la distancia, pero no pude, se me resulto muy dificil.
 ademas en el classroom no encontre la clase grabada donde explicaba como usarlo, ni en su canal de youtube.
 asi que hice el resto.
+
+
+(UPDATE)
+Al final pude entender como usar el sensor ultrasonico, ya lo agregue
