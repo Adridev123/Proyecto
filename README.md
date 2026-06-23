@@ -6,3 +6,6 @@ Curso: 4° 2° Computacion
 Mail: adriel.fuxet32@gmail.com
 
 Docente: Gonzalo Consorti
+
+
+Buenas profe aviso que lo hice con mi compañero Antonio Latour
