@@ -1,0 +1,139 @@
+#include <Adafruit_NeoPixel.h>
+
+#define buzzer 3
+#define boton1 5
+#define NEOPIN1 6
+#define NEOPIN2 7
+#define CANT_PIXEL1 24
+
+#define length(a,b)  sizeof(a)/sizeof(b)
+
+Adafruit_NeoPixel Flex1 = Adafruit_NeoPixel( CANT_PIXEL1 , NEOPIN1 , NEO_RGB + NEO_KHZ800  );
+Adafruit_NeoPixel Flex2 = Adafruit_NeoPixel( CANT_PIXEL1 , NEOPIN2 , NEO_RGB + NEO_KHZ800  );
+
+bool estadoBoton = false;
+bool ultimo = false;
+
+// Vectores
+int uno[] = {9 , 13, 18, 19, 20, 21, 22, 23};
+int dos[] = {0, 11, 12, 23, 22, 21, 14, 9, 2, 3, 4, 5, 6, 17, 18};
+int tres[] = {0, 11, 12, 23, 22, 21, 14, 9, 2, 20, 19, 18, 5, 6, 17};
+int cuatro[] = {0, 1, 2, 9, 14, 21, 22, 23, 20, 19, 18};
+int cinco[] = {0, 11, 12, 23, 1, 2, 9, 14, 21, 20, 19, 18, 17, 6, 5};
+int seis[] = {0, 11, 12, 23, 1, 2, 3, 4, 9, 14, 21, 20, 19, 18, 17, 6, 5};
+int todos[] = {
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23};
+
+int cantidades[] = {
+  length(uno, int),
+  length(dos, int),
+  length(tres, int),
+  length(cuatro, int),
+  length(cinco, int),
+  length(seis, int),
+  length(todos, int)
+};
+
+int* numeros[] = {uno, dos, tres, cuatro, cinco, seis};
+
+void setup()
+{
+  pinMode(boton1, INPUT);
+  
+  pinMode(buzzer, OUTPUT);
+  pinMode(NEOPIN1, OUTPUT);
+  pinMode(NEOPIN2, OUTPUT);
+  
+  Flex1.begin();
+  Flex1.clear();
+  Flex1.show();
+  Flex2.begin();
+  Flex2.clear();
+  Flex2.show();
+  
+  Serial.begin(9600);
+  randomSeed( analogRead(A0) );
+}
+
+void loop()
+{
+  bool boton = digitalRead(5);
+  if (boton == HIGH && ultimo == LOW)
+  {
+    estadoBoton = !estadoBoton;
+    delay(50);
+  }
+  ultimo = boton;
+  
+  if (estadoBoton)
+  {
+    int dado1 = random(1, 7);
+    int dado2 = random(1, 7);
+    
+    for (int i = 0; i < 6; i++)
+    {
+      int random1 = random(1, 7);
+      int random2 = random(1, 7);
+      for (int i = 0; i < cantidades[random1 - 1]; i++)
+      {
+          Flex1.setPixelColor(numeros[random1 - 1][i], 0, 255, 255);
+      }
+
+      for (int i = 0; i < cantidades[random2 - 1]; i++)
+      {
+          Flex2.setPixelColor(numeros[random2 - 1][i], 0, 255, 255);
+      }
+      Flex1.show();
+   	  Flex2.show();
+      delay(200);
+      Flex1.clear();
+   	  Flex2.clear();
+      Flex1.show();
+   	  Flex2.show();
+    }
+    
+    Serial.print(dado1);
+    Serial.print(" ");
+    Serial.println(dado2);
+    
+    Flex1.clear();
+    Flex2.clear();
+
+    for (int i = 0; i < cantidades[dado1 - 1]; i++)
+    {
+        Flex1.setPixelColor(numeros[dado1 - 1][i], 0, 255, 255);
+    }
+
+    for (int i = 0; i < cantidades[dado2 - 1]; i++)
+    {
+        Flex2.setPixelColor(numeros[dado2 - 1][i], 0, 255, 255);
+    }
+    Flex1.show();
+    Flex2.show();
+    
+    if (dado1 + dado2 == 7)
+    {
+      Serial.println("ganaste");
+      delay(1000);
+      do
+      {
+        digitalWrite(buzzer, 1);
+        for (int i = 0; i < 24; i++)
+        {
+            Flex2.setPixelColor(i, 0, 255, 255);
+          	Flex1.setPixelColor(i, 0, 255, 255);
+        }
+        Flex1.show();
+    	Flex2.show();
+        delay(200);
+        Flex1.clear();
+   		Flex2.clear();
+        Flex1.show();
+    	Flex2.show();
+        delay(200);
+      }while (estadoBoton);
+    }
+  }
+  estadoBoton = false;
+}
